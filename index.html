@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Vhs Retrodigital — Videoteca</title>
+  <meta name="description" content="Vhs Retrodigital — colección de videos retro en formato VHS digitalizado." />
+
+  <!-- Google Fonts (puedes cambiarlo) -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* -----------------------
+       VHS RetroDigital — estilos (embedded)
+       Reemplazá logo.png, /videos/* y /thumbs/* según tus archivos
+       ----------------------- */
+
+    :root{
+      --bg1: #0b0f17;
+      --accent: #ffcc00; /* color tipo VHS amarillo */
+      --glass: rgba(255,255,255,0.04);
+      --card: rgba(0,0,0,0.35);
+      --text: #e6e6e6;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: 'Montserrat', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      background: radial-gradient(1200px 600px at 10% 10%, rgba(20,28,40,0.6), transparent),
+                  linear-gradient(180deg,var(--bg1) 0%, #071023 100%);
+      color:var(--text);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      padding:28px;
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+      gap:20px;
+    }
+
+    header{
+      display:flex;
+      gap:18px;
+      align-items:center;
+    }
+    .logo{
+      width:78px;height:78px;border-radius:12px;overflow:hidden;flex:0 0 78px;background:linear-gradient(135deg,#111 0%, #1b1f2a 100%);
+      display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,0.04);
+      box-shadow:0 6px 22px rgba(0,0,0,0.6);
+    }
+    .logo img{width:100%;height:100%;object-fit:cover;display:block}
+
+    h1{font-size:20px;margin:0}
+    .subtitle{font-size:13px;color:rgba(230,230,230,0.7);margin-top:4px}
+
+    /* Player */
+    .player-wrap{
+      display:grid;grid-template-columns:1fr 400px;gap:20px;align-items:start;
+    }
+
+    .player-card{
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      padding:12px;border-radius:14px;position:relative;box-shadow:0 8px 30px rgba(0,0,0,0.6);
+      border:1px solid rgba(255,255,255,0.03);
+    }
+
+    #playerContainer{
+      width:100%;aspect-ratio:16/9;background:#000;border-radius:10px;overflow:hidden;position:relative;
+    }
+
+    #playerContainer video, #playerContainer iframe{width:100%;height:100%;display:block}
+
+    .meta{
+      display:flex;justify-content:space-between;align-items:center;padding-top:10px;
+    }
+
+    .meta .title{font-weight:700}
+    .meta .controls{font-size:13px;color:rgba(230,230,230,0.75)}
+
+    /* Grid */
+    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:18px}
+    .card{
+      background:var(--card);padding:10px;border-radius:12px;position:relative;overflow:hidden;cursor:pointer;
+      transition:transform .18s ease, box-shadow .18s ease;
+    }
+    .card:hover{transform:translateY(-6px);box-shadow:0 10px 30px rgba(0,0,0,0.6)}
+    .thumb{width:100%;height:120px;object-fit:cover;border-radius:8px;display:block}
+    .card .info{padding-top:8px}
+    .card .label{font-weight:700}
+    .card .sub{font-size:13px;color:rgba(230,230,230,0.7)}
+
+    /* Play icon */
+    .playbtn{
+      position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+      width:62px;height:62px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+      background:linear-gradient(180deg, rgba(0,0,0,0.55), rgba(0,0,0,0.35));border:2px solid rgba(255,255,255,0.04)
+    }
+    .playbtn svg{width:26px;height:26px;filter:drop-shadow(0 4px 10px rgba(0,0,0,0.6))}
+
+    /* Small sidebar */
+    .sidebar{background:var(--card);padding:12px;border-radius:12px;min-height:120px}
+    .muted{font-size:13px;color:rgba(230,230,230,0.7)}
+
+    /* Scanlines & CRT glow */
+    .screen-overlay{pointer-events:none;position:absolute;inset:0;mix-blend-mode:overlay}
+    .screen-overlay::after{
+      content:"";position:absolute;inset:0;background-image:repeating-linear-gradient( to bottom, rgba(255,255,255,0.02) 0 1px, transparent 1px 4px );opacity:0.25;
+    }
+
+    /* Responsive */
+    @media (max-width:900px){
+      .player-wrap{grid-template-columns:1fr}
+      .sidebar{order:2}
+    }
+
+    /* Footer */
+    footer{text-align:center;color:rgba(230,230,230,0.6);font-size:13px;padding:14px}
+
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+      <!-- Reemplaza logo.png con tu logo -->
+      <img src="logo.png" alt="Vhs Retrodigital logo" onerror="this.style.display='none'">
+    </div>
+    <div>
+      <h1>Vhs Retrodigital</h1>
+      <div class="subtitle">Videoteca retro — colecciones digitalizadas en formato VHS</div>
+    </div>
+  </header>
+
+  <main>
+    <section class="player-wrap">
+      <div class="player-card">
+        <div id="playerContainer" aria-live="polite">
+          <!-- Aquí se inyecta <video> o <iframe> desde JS -->
+          <video id="mainVideo" controls preload="metadata" poster="thumbs/placeholder.jpg">
+            <!-- Ejemplo: <source src="videos/sample1.mp4" type="video/mp4"> -->
+            Tu navegador no soporta la etiqueta video.
+          </video>
+          <div class="screen-overlay" aria-hidden="true"></div>
+        </div>
+
+        <div class="meta">
+          <div class="title" id="playerTitle">Seleccioná un video</div>
+          <div class="controls">VHS · Retrodigital</div>
+        </div>
+      </div>
+
+      <aside class="sidebar player-card">
+        <div class="muted">Consejos rápidos</div>
+        <ul>
+          <li>Subí tus .mp4 a /videos/ y thumbnails a /thumbs/</li>
+          <li>Si usás Archive.org pegá aquí el enlace embed y cambiá data-type="iframe"</li>
+          <li>El sitio es totalmente estático: podés hostearlo en Netlify, GitHub Pages o Cloudflare Pages</li>
+        </ul>
+      </aside>
+    </section>
+
+    <section style="margin-top:18px">
+      <h2 style="margin:0 0 12px 0">Videoteca</h2>
+      <div class="grid" id="gallery">
+
+        <!-- EJEMPLOS: copiá/pega y modificá -->
+        <div class="card" tabindex="0" data-type="video" data-src="videos/sample1.mp4" data-title="Demo VHS 1">
+          <img class="thumb" src="thumbs/sample1.jpg" alt="Demo VHS 1">
+          <div class="playbtn" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+          </div>
+          <div class="info"><div class="label">Demo VHS 1</div><div class="sub">2:34 · 1992</div></div>
+        </div>
+
+        <div class="card" tabindex="0" data-type="iframe" data-src="https://archive.org/embed/ExampleVideoID" data-title="Demo Archive">
+          <img class="thumb" src="thumbs/sample2.jpg" alt="Demo Archive">
+          <div class="playbtn" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+          </div>
+          <div class="info"><div class="label">Demo Archive</div><div class="sub">Embed desde Archive.org</div></div>
+        </div>
+
+        <!-- duplicá para más videos -->
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    Retrodigital VHS · Hecho para el amor de mi vida Delfiiiii
+  </footer>
+
+  <script>
+    // JS muy simple para manejar clicks en miniaturas
+    const gallery = document.getElementById('gallery');
+    const playerContainer = document.getElementById('playerContainer');
+    const playerTitle = document.getElementById('playerTitle');
+
+    function loadVideo(type, src, title){
+      playerTitle.textContent = title || 'Reproduciendo';
+      if(type === 'iframe'){
+        playerContainer.innerHTML = `<iframe src="${src}" frameborder="0" allowfullscreen title="${title}"></iframe><div class="screen-overlay"></div>`;
+      } else {
+        playerContainer.innerHTML = `<video id="mainVideo" controls preload="metadata" autoplay>
+          <source src="${src}">
+          Tu navegador no soporta la etiqueta video.
+        </video><div class="screen-overlay"></div>`;
+      }
+    }
+
+    gallery.addEventListener('click', e=>{
+      const card = e.target.closest('.card');
+      if(!card) return;
+      const type = card.dataset.type || 'video';
+      const src = card.dataset.src;
+      const title = card.dataset.title;
+      loadVideo(type, src, title);
+    });
+
+    // Soporte para control con teclado y accesibilidad
+    gallery.addEventListener('keydown', e=>{
+      if(e.key === 'Enter' || e.key === ' ') {
+        const card = e.target.closest('.card');
+        if(!card) return;
+        const type = card.dataset.type || 'video';
+        const src = card.dataset.src;
+        const title = card.dataset.title;
+        loadVideo(type, src, title);
+        e.preventDefault();
+      }
+    });
+
+  </script>
+</body>
+</html>
